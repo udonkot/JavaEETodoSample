@@ -6,60 +6,71 @@
 <body>
 	<h2>JavaEEお試しTodoList</h2>
 	<h:form>
-	Title: <h:inputText value="#{todoService.todoBean.title}" /><br />
-	Content: <h:inputText value="#{todoService.todoBean.content}" /><br />
+	Title: <h:inputText value="#{todoService.todoBean.title}" />
+		<br />
+	Content: <h:inputText value="#{todoService.todoBean.content}" />
+		<br />
 		<h:commandButton value="登録" action="#{todoService.regist()}" />
 		<br />
 		現在の登録件数：#{todoService.todoList.size()}件
 		<br />
 
+		<!-- 1件以上登録時のみ表示 -->
 		<ui:fragment rendered="#{0 lt todoService.todoList.size()}">
 
-		<h:dataTable var="todo" value="#{todoService.todoList}" border="1">
+			<h:dataTable var="todo" value="#{todoService.todoList}" border="1">
+				<!-- No -->
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="No" />
+					</f:facet>
+					<h:outputText value="#{todo.no}" />
+				</h:column>
+				<!-- タイトル -->
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="タイトル" />
+					</f:facet>
+					<ui:fragment rendered="#{todo.finished}">
+						<s><h:outputText value="#{todo.title}" /></s>
+					</ui:fragment>
+					<ui:fragment rendered="#{!todo.finished}">
+						<h:outputText value="#{todo.title}" />
+					</ui:fragment>
+				<!-- 内容 -->
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="内容" />
+					</f:facet>
 
-			<h:column>
-				<f:facet name="header">
-					<h:outputText value="No" />
-				</f:facet>
-				<h:outputText value="#{todo.no}" />
-			</h:column>
-			<h:column>
-				<f:facet name="header">
-					<h:outputText value="タイトル" />
-				</f:facet>
-				<ui:fragment rendered="#{todo.finished}">
-					<s><h:outputText value="#{todo.title}" /></s>
-				</ui:fragment>
-				<ui:fragment rendered="#{!todo.finished}">
-					<h:outputText value="#{todo.title}" />
-				</ui:fragment>
+					<!-- 完了時は取り消し線を付ける -->
+					<ui:fragment rendered="#{todo.finished}">
+						<s><h:outputText value="#{todo.content}" /></s>
+					</ui:fragment>
+					<ui:fragment rendered="#{!todo.finished}">
+						<h:outputText value="#{todo.content}" />
+					</ui:fragment>
+				</h:column>
 
-			</h:column>
-			<h:column>
-				<f:facet name="header">
-					<h:outputText value="TODO" />
-				</f:facet>
-				<ui:fragment rendered="#{todo.finished}">
-					<s><h:outputText value="#{todo.content}" /></s>
-				</ui:fragment>
-				<ui:fragment rendered="#{!todo.finished}">
-				<h:outputText value="#{todo.content}" />
-				</ui:fragment>
-			</h:column>
+				<!-- 状態 -->
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="ボタン" />
+					</f:facet>
 
-			<h:column>
-				<f:facet name="header">
-					<h:outputText value="ボタン" />
-				</f:facet>
-				<ui:fragment rendered="#{todo.finished}">
-				    <h:commandButton value="削除" action="#{todoService.delete(todo.no)}" />
-				</ui:fragment>
-				<ui:fragment rendered="#{!todo.finished}">
-				    <h:commandButton value="完了" action="#{todoService.finish(todo.no)}" />
-				</ui:fragment>
-			</h:column>
+					<!-- 登録時、完了時で表示するボタンを変える -->
+					<ui:fragment rendered="#{todo.finished}">
+						<h:commandButton value="削除"
+							action="#{todoService.delete(todo.no)}" />
+					</ui:fragment>
+					<ui:fragment rendered="#{!todo.finished}">
+						<h:commandButton value="完了"
+							action="#{todoService.finish(todo.no)}" />
+					</ui:fragment>
+				</h:column>
 
-		</h:dataTable>
+			</h:dataTable>
 		</ui:fragment>
 	</h:form>
 </body>
